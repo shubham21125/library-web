@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Book Library - Discover Your Next Read</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Header */
+        .header {
+            position: relative;
+            padding: 3rem 5%;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.9), rgba(74, 20, 140, 0.9));
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, #a8edea, #fed6e3);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease-in-out infinite;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* AI Search Bar */
+        .ai-search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            z-index: 2;
+        }
+
+        .search-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .search-wrapper:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .search-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .search-wrapper:hover::before {
+            left: 100%;
+        }
+
+        #aiSearchInput {
+            width: 100%;
+            padding: 1rem 4rem 1rem 3rem;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        #aiSearchInput::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+        }
+
+        .ai-badge {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.05); }
+        }
+
+        /* Main Content */
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            margin-top: -2rem;
+            border-radius: 2rem 2rem 0 0;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding-top: 3rem;
+        }
+
+        .section {
+            padding: 3rem 5%;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .book-animation {
+            perspective: 1200px;
+            height: 380px;
+        }
+
+        .book {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .book-animation:hover .book {
+            transform: rotateY(180deg) scale(1.02);
+        }
+
+        .book-front, .book-info {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .book-animation:hover .book-front,
+        .book-animation:hover .book-info {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-front {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        }
+
+        .book-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .book-animation:hover .book-front img {
+            transform: scale(1.05);
+        }
+
+        .book-info {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .book-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .book-author {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+        }
+
+        .read-btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .read-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .read-btn:hover::before {
+            left: 100%;
+        }
+
+        .read-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Loading Animation */
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(102, 126, 234, 0.3);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Floating Elements */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .shape {
+            position: absolute;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 50%;
+            animation: floatUp 15s infinite linear;
+        }
+
+        .shape:nth-child(1) { left: 10%; width: 60px; height: 60px; animation-delay: 0s; }
+        .shape:nth-child(2) { left: 20%; width: 40px; height: 40px; animation-delay: 2s; }
+        .shape:nth-child(3) { left: 35%; width: 80px; height: 80px; animation-delay: 4s; }
+        .shape:nth-child(4) { left: 50%; width: 30px; height: 30px; animation-delay: 6s; }
+        .shape:nth-child(5) { left: 70%; width: 50px; height: 50px; animation-delay: 8s; }
+        .shape:nth-child(6) { left: 85%; width: 70px; height: 70px; animation-delay: 10s; }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Search Results Highlight */
+        .book-animation.search-match {
+            animation: highlightMatch 1s ease-in-out;
+        }
+
+        @keyframes highlightMatch {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .book-animation.search-hidden {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .section {
+                padding: 2rem 3%;
+            }
+        }
+
+        /* No Results Message */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Header with AI Search -->
+    <header class="header">
+        <h1>📚 AI Book Library</h1>
+        <p class="subtitle">Discover your next favorite read with intelligent recommendations</p>
+        
+        <div class="ai-search-container">
+            <div class="search-wrapper">
+                <div class="search-icon">🔍</div>
+                <input 
+                    type="text" 
+                    id="aiSearchInput" 
+                    placeholder="Ask AI: 'Find books about productivity' or search by title/author..."
+                    onkeyup="intelligentSearch()"
+                />
+                <div class="ai-badge">AI</div>
+            </div>
+        </div>
+        
+        <div class="loading-container" id="loadingContainer">
+            <div class="loading-spinner"></div>
+            <p>AI is searching...</p>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- No Results Message -->
+        <div class="no-results" id="noResults">
+            <h3>🤖 No books found matching your search</h3>
+            <p>Try searching for different keywords or browse our categories below!</p>
+        </div>
+
+        <section class="section motivational-books">
+            <h2 class="section-title">✨ Motivational Books</h2>
+            <div class="books-grid">
+                <div class="book-animation" data-title="The 7 Habits of Highly Effective People" data-author="Stephen Covey" data-category="motivational productivity leadership">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/DAOU7Zbk4VkHHuGiQO4nV6y50h-Y3HPzcHIApKi7tD4/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9kMWZh/OW42azJxbDdvbi5j/bG91ZGZyb250Lm5l/dC83aGFiLXRoZS03/LWhhYml0cy1vZi1o/aWdobHktZWZmZWN0/aXZlLXBlb3BsZS1o/ZWFkZXIuanBn" alt="The 7 Habits of Highly Effective People">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The 7 Habits of Highly Effective People</h3>
+                            <p class="book-author">Stephen Covey</p>
+                            <a href="https://archive.org/details/covey-the-7-habits-of-highly-effective-people" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="book-animation" data-title="How to Win Friends & Influence People" data-author="Dale Carnegie" data-category="motivational communication social">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/tlBoiCPdjcQ3wtTsxZM0pTQosxxhpytC_ld9tqyR7xA/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9zYWxl/c3ZhdWx0LnByby93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyMC8x/Mi9Ib3ctdG8td2lu/LWZyaWVuZHMtYW5k/LWluZmx1ZW5jZS1w/ZW9wbGUtRGFsZS1D/YXJuZWdpZS5wbmc" alt="How to Win Friends & Influence People">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">How to Win Friends & Influence People</h3>
+                            <p class="book-author">Dale Carnegie</p>
+                            <a href="https://archive.org/details/howtowinfriendsinfluencepeople_202004" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Think and Grow Rich" data-author="Napoleon Hill" data-category="motivational wealth success">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/JWSWSyl048j_X6MshU6XgLgXdzk4Ll7TrWQ0GnX4g7I/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzYxSXhKdVJJMzlM/LmpwZw" alt="Think and Grow Rich">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Think and Grow Rich</h3>
+                            <p class="book-author">Napoleon Hill</p>
+                            <a href="https://archive.org/details/thinkgrowrichori0000napo" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The Power of Now" data-author="Eckhart Tolle" data-category="motivational mindfulness spirituality">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/ESo_gUHs1W6FDLHaAmSzt_0LmA3Z5TsC4qC-pJ-Sjvc/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NDEwaHc2UTVhOUwu/anBn" alt="The Power of Now">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The Power of Now</h3>
+                            <p class="book-author">Eckhart Tolle</p>
+                            <a href="https://archive.org/details/ThePowerOfNowEckhartTolle_201806" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="You Are a Badass" data-author="Jen Sincero" data-category="motivational self-help confidence">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/EbOaIDkdyyz-rgKAB0okBK5yWOCs-Nt0zHo5C7wAgD4/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pLnRo/cmlmdGJvb2tzLmNv/bS9hcGkvaW1hZ2Vo/YW5kbGVyL20vOUM1/RkI0MENBQjZFMjM5/MUNERUMzMEI0RTA5/OENEMUI2RkYzNzM3/RS5qcGVn" alt="You Are a Badass">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">You Are a Badass</h3>
+                            <p class="book-author">Jen Sincero</p>
+                            <a href="https://archive.org/details/youarebadasshowt0000sinc" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Atomic Habits" data-author="James Clear" data-category="motivational habits productivity">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/_zXWZSIvASFv1eAvQ26uRZZYoG-LZCQhEZwZDaOi7Z4/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9jb3Zl/cnMub3BlbmxpYnJh/cnkub3JnL2IvaWQv/MTQ4NTAzMTctTS5q/cGc" alt="Atomic Habits">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Atomic Habits</h3>
+                            <p class="book-author">James Clear</p>
+                            <a href="https://archive.org/details/atomic-habits" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>    
+            </div>  
+        </section>
+
+        <section class="section money-books">
+            <h2 class="section-title">💰 Financial Mastery Books</h2>
+            <div class="books-grid">
+                <div class="book-animation" data-title="Rich Dad Poor Dad" data-author="Robert T. Kiyosaki" data-category="money finance investment wealth">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/reQDCe4547mOW_kPK5dF_QKIlZPPBljUuoeXgKdQa8A/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9mYXN0/bHljZG4uZGVudGFs/dG93bi5jb20vVXNl/clVwbG9hZHMvMTgy/NjMvYmxvZy9icF8x/NzU5Nl8xMjA4Ny5q/cGc" alt="Rich Dad Poor Dad">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Rich Dad Poor Dad</h3>
+                            <p class="book-author">Robert T. Kiyosaki</p>
+                            <a href="https://archive.org/details/rich-dad-poor-dad-by-robert-t.-kiyosaki" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Secrets of the Millionaire Mind" data-author="T. Harv Eker" data-category="money psychology wealth mindset">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/L0qsFvFhsAiavQKJT93YVKp5E350ZMupZlNU4R1hGMA/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzUxZE5hdVIxTlpM/LmpwZw" alt="Secrets of the Millionaire Mind">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Secrets of the Millionaire Mind</h3>
+                            <p class="book-author">T. Harv Eker</p>
+                            <a href="https://archive.org/details/secretsofmillion00eker" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The Psychology of Money" data-author="Morgan Housel" data-category="money psychology finance behavior">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/fKvI3WHVdkgSYHI0TUSfbKWJu2Ud-EAiPxtMd5xnhx8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/Y291bnRlcmN1cnJl/bnRzLm9yZy93cC1j/b250ZW50L3VwbG9h/ZHMvMjAyMy8wMS9U/aGUtUHN5Y2hvbG9n/eS1vZi1Nb25leS1q/cGcud2VicA" alt="The Psychology of Money">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The Psychology of Money</h3>
+                            <p class="book-author">Morgan Housel</p>
+                            <a href="https://archive.org/details/the-psychology-of-money-morgan-housel-z-library-1" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="I Will Teach You to Be Rich" data-author="Ramit Sethi" data-category="money personal-finance budgeting">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/rbGQRqEhSruCfo64mrdw8u9NlgtWXwFnebJh_vkrG9M/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bmF0ZWxpYXNvbi5j/b20vX25leHQvaW1h/Z2U_dXJsPS9hc3Nl/dHMvbm90ZXMvbGVz/c29ucy13aWxsLXRl/YWNoLXJpY2gtcmFt/aXQtc2V0aGkvbGVz/c29ucy13aWxsLXRl/YWNoLXJpY2gtcmFt/aXQtc2V0aGktY292/ZXIuanBnJnc9MTA4/MCZxPTc1.jpeg" alt="I Will Teach You to Be Rich">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">I Will Teach You to Be Rich</h3>
+                            <p class="book-author">Ramit Sethi</p>
+                            <a href="https://archive.org/details/iwillteachyoutob0000seth" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Your Money or Your Life" data-author="Vicki Robin & Joe Dominguez" data-category="money finance life-balance">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/IQu78WiughD_H76nEe5JPoK0MhqFVKKX98kLfzq64wU/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMxLnBlbmd1aW5y/YW5kb21ob3VzZS5j/b20vY292ZXIvOTc4/MTEwMTUzOTcwNQ.jpeg" alt="Your Money or Your Life">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Your Money or Your Life</h3>
+                            <p class="book-author">Vicki Robin & Joe Dominguez</p>
+                            <a href="https://archive.org/details/yourmoneyoryourl0000robi" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The Richest Man in Babylon" data-author="George S. Clason" data-category="money ancient-wisdom financial-principles">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/OOKXcS0C4pKJULSjtVQ-IU3eP_9mpZ-QdG0yTC59w9M/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzcxeGxSNnlEdmtM/LmpwZw" alt="The Richest Man in Babylon">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The Richest Man in Babylon</h3>
+                            <p class="book-author">George S. Clason</p>
+                            <a href="https://archive.org/details/clason-richest-man-in-babylon" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The Intelligent Investor" data-author="Benjamin Graham" data-category="money investing stock-market value-investing">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/8Uv9LHWzwSdRvrte4JNlKA-97hHdO5eiWC1ha2ktYCA/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzkxTDBMYTFwd0RM/LmpwZw" alt="The Intelligent Investor">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The Intelligent Investor</h3>
+                            <p class="book-author">Benjamin Graham</p>
+                            <a href="https://archive.org/details/intelligentinves0000pysh" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Money: Master the Game" data-author="Tony Robbins" data-category="money investing financial-freedom">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/bNk_bUJZxBDLAplJziQwYyt3pHSyBzsLsWUnizfs840/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWcy/Lm9kLWNkbi5jb20v/SW1hZ2VUeXBlLTEw/MC81MDU0LTEvJTdC/MTAzNTE5RUYtRTI4/QS00Q0U0LTlBQTkt/MjFDRjFCOTA4MzVF/JTdESW1nMTAwLmpw/Zw" alt="Money: Master the Game">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Money: Master the Game</h3>
+                            <p class="book-author">Tony Robbins</p>
+                            <a href="https://archive.org/details/moneymastergame70000robb" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section self-improvement-books">
+            <h2 class="section-title">🧠 Self-Improvement Books</h2>
+            <div class="books-grid">
+                <div class="book-animation" data-title="Deep Work" data-author="Cal Newport" data-category="self-improvement focus productivity concentration">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/2sH-fhdCUSjaotzIT8WPyHbK58K6k9g2GhLrt4zvaQ0/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9jb3Zl/cnMub3BlbmxpYnJh/cnkub3JnL2IvaWQv/MTQ4NDU0ODAtTC5q/cGc" alt="Deep Work">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Deep Work</h3>
+                            <p class="book-author">Cal Newport</p>
+                            <a href="https://archive.org/details/deepworkrulesfor0000newp/page/n5/mode/2up" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Can't Hurt Me" data-author="David Goggins" data-category="self-improvement mental-toughness resilience">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/AeW1Q7_7fLtLtUUVQ0g-0kZEFjAi-5bpNNK_Dofw9hc/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9jb3Zl/cnMub3BlbmxpYnJh/cnkub3JnL2IvaWQv/OTQwNjI2MS1MLmpw/Zw" alt="Can't Hurt Me">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Can't Hurt Me</h3>
+                            <p class="book-author">David Goggins</p>
+                            <a href="https://archive.org/details/aqtujuhwcqeotfra1pfwrcex3j9s3ftp9h4ww5i8" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Mindset: The New Psychology of Success" data-author="Carol S. Dweck" data-category="self-improvement growth-mindset psychology">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/QZm5x2h3_6wCYKOr2QD4vT2vGjXUJUqmr1p9JwYw7WQ/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzQxTDc2Q1REMEZM/LmpwZw" alt="Mindset">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Mindset: The New Psychology of Success</h3>
+                            <p class="book-author">Carol S. Dweck</p>
+                            <a href="https://archive.org/details/mindsetthenewyps00carol" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The Subtle Art of Not Giving a F*ck" data-author="Mark Manson" data-category="self-improvement philosophy life-advice">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/7s0oHDgVzGVq1KNn7EgV9KjD3Dw9nMdV0YG2pQFwVzw/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzUxNTZaYkE3UjlM/LmpwZw" alt="The Subtle Art of Not Giving a F*ck">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The Subtle Art of Not Giving a F*ck</h3>
+                            <p class="book-author">Mark Manson</p>
+                            <a href="https://archive.org/details/subtleartofnotgi0000mans" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The Four Agreements" data-author="Don Miguel Ruiz" data-category="self-improvement wisdom spirituality personal-freedom">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/XkDqJ4xJrGV8z7eUALFqyg9zQ7KhPWq-Vk3FqZ8z8Aw/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzUxUFNCRHZaOXVM/LmpwZw" alt="The Four Agreements">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The Four Agreements</h3>
+                            <p class="book-author">Don Miguel Ruiz</p>
+                            <a href="https://archive.org/details/fouragreementss00ruiz" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="12 Rules for Life" data-author="Jordan B. Peterson" data-category="self-improvement psychology life-rules">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/2yKxVxL8_xHzU7VnYZXQqxJG8BLzMHxLhN3zKCRk0qo/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzQxSzJ4T1NTeHJM/LmpwZw" alt="12 Rules for Life">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">12 Rules for Life</h3>
+                            <p class="book-author">Jordan B. Peterson</p>
+                            <a href="https://archive.org/details/12rulesforlifean0000pete" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section career-books">
+            <h2 class="section-title">🚀 Career Development Books</h2>
+            <div class="books-grid">
+                <div class="book-animation" data-title="Good to Great" data-author="Jim Collins" data-category="career leadership business management">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/3nX9kKqFzBwQcKB4CRjwvV0VzZ5dOj2L4jOqE2Q8OBs/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzQxOWV6OWVlZ3JM/LmpwZw" alt="Good to Great">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Good to Great</h3>
+                            <p class="book-author">Jim Collins</p>
+                            <a href="https://archive.org/details/goodtogreatwhyso0000coll" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The Lean Startup" data-author="Eric Ries" data-category="career entrepreneurship startup innovation">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/aRqpE7vE7QBl1CjLwQ9KLpJMG3dF5tLVjOzDj2NJ2Zw/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzUxVnVKaE5XT0hM/LmpwZw" alt="The Lean Startup">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The Lean Startup</h3>
+                            <p class="book-author">Eric Ries</p>
+                            <a href="https://archive.org/details/leanstartup00ries" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The Hard Thing About Hard Things" data-author="Ben Horowitz" data-category="career leadership business challenges">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/1yHzLQdcOGkJH3eH2Q8VfgJG9tQHZG5pKtR4RVB9Mzw/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzQxT3BBNzZNUTNM/LmpwZw" alt="The Hard Thing About Hard Things">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The Hard Thing About Hard Things</h3>
+                            <p class="book-author">Ben Horowitz</p>
+                            <a href="https://archive.org/details/hardthingaboutha0000horo" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Zero to One" data-author="Peter Thiel" data-category="career entrepreneurship innovation startup">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/2mGLzDQJhNzN5n9CqRQ8WfG8V7D2Q5tGYgKLjE3oHqw/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzQxcUpnN3NTUlVM/LmpwZw" alt="Zero to One">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Zero to One</h3>
+                            <p class="book-author">Peter Thiel</p>
+                            <a href="https://archive.org/details/zerotoonenotes0000thie" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The First 90 Days" data-author="Michael Watkins" data-category="career transition leadership new-job">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/9rMzT6Q3jVqN8H9K2jGLwQRzW5qHpR7M5Y3VzJ3OzRo/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzQxTW9RdGpLUnNM/LmpwZw" alt="The First 90 Days">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The First 90 Days</h3>
+                            <p class="book-author">Michael Watkins</p>
+                            <a href="https://archive.org/details/first90daysupdat0000watk" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Crossing the Chasm" data-author="Geoffrey A. Moore" data-category="career technology marketing innovation">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/3GzHzXqJYDqK8VfR7QGLwOZzQ7LrMzO9qN2VtJ5qGRw/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzQxUXpHZkFmRVBM/LmpwZw" alt="Crossing the Chasm">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Crossing the Chasm</h3>
+                            <p class="book-author">Geoffrey A. Moore</p>
+                            <a href="https://archive.org/details/crossingchasmmar0000moor" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="The E-Myth Revisited" data-author="Michael E. Gerber" data-category="career entrepreneurship small-business systems">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/VwHzQ7B9Gqo5N8rR2QJ8LfXzGzM7OtQ5YgKLjE3qHxw/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzQxUXpGZUFmRVBM/LmpwZw" alt="The E-Myth Revisited">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">The E-Myth Revisited</h3>
+                            <p class="book-author">Michael E. Gerber</p>
+                            <a href="https://archive.org/details/emythrevisitedwh0000gerb" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-animation" data-title="Never Eat Alone" data-author="Keith Ferrazzi" data-category="career networking relationships business">
+                    <div class="book">
+                        <div class="book-front">
+                            <img src="https://imgs.search.brave.com/5rQ7LzX8NqH5V9qR2QGLwOZzQ7LrMzO9qN2VtJ5qGRw/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzQxb3FMZUFmRVBM/LmpwZw" alt="Never Eat Alone">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Never Eat Alone</h3>
+                            <p class="book-author">Keith Ferrazzi</p>
+                            <a href="https://archive.org/details/nevereatalonesec0000ferr" class="read-btn" target="_blank">Read Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Intelligent search function
+        function intelligentSearch() {
+            const searchTerm = document.getElementById('aiSearchInput').value.toLowerCase();
+            const books = document.querySelectorAll('.book-animation');
+            const sections = document.querySelectorAll('.section');
+            const noResults = document.getElementById('noResults');
+            let foundMatches = 0;
+
+            // Show loading animation
+            if (searchTerm.length > 2) {
+                showLoading();
+            }
+
+            // Hide loading after a brief delay (simulating AI processing)
+            setTimeout(() => {
+                hideLoading();
+                
+                if (searchTerm === '') {
+                    // Show all books when search is empty
+                    books.forEach(book => {
+                        book.classList.remove('search-hidden');
+                        book.classList.remove('search-match');
+                    });
+                    sections.forEach(section => section.style.display = 'block');
+                    noResults.classList.remove('show');
+                    return;
+                }
+
+                books.forEach(book => {
+                    const title = book.getAttribute('data-title')?.toLowerCase() || '';
+                    const author = book.getAttribute('data-author')?.toLowerCase() || '';
+                    const category = book.getAttribute('data-category')?.toLowerCase() || '';
+                    
+                    // Enhanced search logic for AI-like queries
+                    const isMatch = title.includes(searchTerm) || 
+                                  author.includes(searchTerm) || 
+                                  category.includes(searchTerm) ||
+                                  matchesAIQuery(searchTerm, title, author, category);
+                    
+                    if (isMatch) {
+                        book.classList.remove('search-hidden');
+                        book.classList.add('search-match');
+                        foundMatches++;
+                    } else {
+                        book.classList.add('search-hidden');
+                        book.classList.remove('search-match');
+                    }
+                });
+
+                // Show/hide sections based on matches
+                sections.forEach(section => {
+                    const sectionBooks = section.querySelectorAll('.book-animation:not(.search-hidden)');
+                    section.style.display = sectionBooks.length > 0 ? 'block' : 'none';
+                });
+
+                // Show no results message
+                if (foundMatches === 0) {
+                    noResults.classList.add('show');
+                } else {
+                    noResults.classList.remove('show');
+                }
+            }, 500);
+        }
+
+        // AI-like query matching
+        function matchesAIQuery(query, title, author, category) {
+            const aiQueries = {
+                'productivity': ['atomic habits', 'deep work', '7 habits', 'productivity', 'focus'],
+                'wealth': ['rich dad', 'millionaire', 'money', 'wealth', 'financial', 'investing'],
+                'mindfulness': ['power of now', 'mindfulness', 'meditation', 'present', 'spirituality'],
+                'leadership': ['leadership', 'leader', 'management', 'good to great', 'influence'],
+                'startup': ['lean startup', 'zero to one', 'entrepreneurship', 'startup', 'innovation'],
+                'habits': ['atomic habits', '7 habits', 'habit', 'routine', 'consistency'],
+                'psychology': ['psychology', 'mindset', 'mental', 'behavior', 'cognitive'],
+                'success': ['success', 'achievement', 'winning', 'effective', 'excellence']
+            };
+
+            for (const [key, keywords] of Object.entries(aiQueries)) {
+                if (query.includes(key)) {
+                    return keywords.some(keyword => 
+                        title.includes(keyword) || 
+                        author.includes(keyword) || 
+                        category.includes(keyword)
+                    );
+                }
+            }
+
+            return false;
+        }
+
+        function showLoading() {
+            document.getElementById('loadingContainer').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingContainer').style.display = 'none';
+        }
+
+        // Add smooth scrolling to search results
+        document.getElementById('aiSearchInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const firstVisibleBook = document.querySelector('.book-animation:not(.search-hidden)');
+                if (firstVisibleBook) {
+                    firstVisibleBook.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        // Add focus effect to search input
+        document.getElementById('aiSearchInput').addEventListener('focus', function() {
+            this.parentElement.style.transform = 'translateY(-3px) scale(1.02)';
+        });
+
+        document.getElementById('aiSearchInput').addEventListener('blur', function() {
+            this.parentElement.style.transform = 'translateY(-2px)';
+        });
+    </script>
+</body>
+</html>
