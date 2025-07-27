@@ -3,23 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Library Portal</title>
-    <!-- Animate.css -->
+    <title>LibraryPortal - Digital Knowledge Hub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <!-- Particles.js -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.1);
+            --border-radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--primary-gradient);
             min-height: 100vh;
             overflow-x: hidden;
+            color: var(--text-primary);
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        /* Enhanced Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         /* Particles Background */
@@ -30,6 +66,122 @@
             top: 0;
             left: 0;
             z-index: 0;
+        }
+
+        /* Enhanced Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: var(--transition);
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow-light);
+            padding: 1rem 3rem;
+        }
+
+        nav.scrolled .logo,
+        nav.scrolled .nav-links a {
+            color: #333;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            text-decoration: none;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .logo::after {
+            content: '✨';
+            position: absolute;
+            right: -30px;
+            top: -5px;
+            font-size: 1rem;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.7; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 15px rgba(79, 172, 254, 0.4));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-gradient);
+            transition: var(--transition);
+            z-index: -1;
+            border-radius: 30px;
+        }
+
+        .nav-links a:hover::before {
+            left: 0;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .menu-toggle span {
+            width: 28px;
+            height: 3px;
+            background: var(--text-primary);
+            margin: 4px 0;
+            transition: var(--transition);
+            border-radius: 3px;
         }
 
         /* Main Container */
@@ -44,171 +196,229 @@
             padding: 2rem;
         }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            animation: slideDown 0.8s ease-out;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: black;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: white;
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
+        /* Enhanced Hero Section */
         .hero {
             text-align: center;
-            margin-top: 5rem;
-            color: white;
-            max-width: 800px;
+            margin-top: 6rem;
+            max-width: 1000px;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 1.2s ease forwards 0.5s;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-size: clamp(2.8rem, 7vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 30%, #ffffff 60%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            line-height: 1.1;
+            position: relative;
+        }
+
+        .hero h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+            animation: expandLine 1.5s ease forwards 1.5s;
+            transform-origin: center;
+            scale: 0;
+        }
+
+        @keyframes expandLine {
+            to { scale: 1; }
         }
 
         .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            line-height: 1.6;
+            font-size: 1.4rem;
+            margin-bottom: 3.5rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
         }
 
         .cta-buttons {
             display: flex;
-            gap: 1.5rem;
+            gap: 2rem;
             justify-content: center;
-            margin-top: 2rem;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 0.8rem 2rem;
+            padding: 1.3rem 3rem;
             border-radius: 50px;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1.1rem;
             text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn-primary {
-            background: white;
-            color: #6e8efb;
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: var(--shadow-heavy);
         }
 
         .btn-outline {
-            border: 2px solid white;
-            color: white;
             background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
         }
 
-        /* Features Section */
+        .btn-outline:hover {
+            background: var(--glass-bg);
+            border-color: var(--text-primary);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Enhanced Features Section */
         .features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-            margin: 5rem 0;
-            max-width: 1200px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin: 10rem 0 6rem;
+            max-width: 1300px;
+            width: 100%;
         }
 
         .feature-card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 2rem;
-            width: 300px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(79, 172, 254, 0.1) 0%, transparent 70%);
+            transform: scale(0);
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover::after {
+            transform: scale(1);
         }
 
         .feature-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: var(--shadow-heavy);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: #6e8efb;
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: block;
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            animation-delay: -2s;
+        }
+
+        .feature-card:nth-child(3) .feature-icon {
+            animation-delay: -4s;
         }
 
         .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #333;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
         }
 
         .feature-card p {
-            color: #666;
-            line-height: 1.6;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1.1rem;
         }
 
-        /* Login Modal */
+        /* Enhanced Modal Styles */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.85);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s;
+            transition: var(--transition);
+            backdrop-filter: blur(15px);
         }
 
         .modal.active {
@@ -216,225 +426,426 @@
             visibility: visible;
         }
 
-        .login-container {
-            background: white;
-            border-radius: 15px;
-            width: 400px;
+        .modal-container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(25px);
+            border-radius: 20px;
+            width: 480px;
             max-width: 90%;
-            padding: 2.5rem;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            padding: 3.5rem;
             position: relative;
-            transform: translateY(50px);
-            transition: all 0.3s;
+            transform: scale(0.7) translateY(50px);
+            transition: var(--transition);
+            box-shadow: var(--shadow-heavy);
+            border: 1px solid var(--glass-border);
         }
 
-        .modal.active .login-container {
-            transform: translateY(0);
+        .modal.active .modal-container {
+            transform: scale(1) translateY(0);
         }
 
         .close-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 1.5rem;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
             cursor: pointer;
-            color: #888;
-            transition: all 0.3s;
+            color: #666;
+            transition: var(--transition);
+            border: none;
         }
 
         .close-btn:hover {
-            color: #333;
-            transform: rotate(90deg);
+            background: rgba(0, 0, 0, 0.2);
+            transform: rotate(90deg) scale(1.1);
         }
 
-        .login-container h2 {
+        .modal-container h2 {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             color: #333;
+            font-weight: 800;
+            font-size: 2rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .input-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             position: relative;
         }
 
         .input-group input {
             width: 100%;
-            padding: 1rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s;
+            padding: 1.5rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-weight: 500;
         }
 
         .input-group input:focus {
-            border-color: #6e8efb;
-            box-shadow: 0 0 0 3px rgba(110, 142, 251, 0.2);
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
             outline: none;
+            background: white;
+            transform: scale(1.02);
         }
 
         .input-group label {
             position: absolute;
-            left: 1rem;
-            top: 1rem;
+            left: 1.5rem;
+            top: 1.5rem;
             color: #999;
-            background: white;
-            padding: 0 0.5rem;
-            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0 0.8rem;
+            transition: var(--transition);
             pointer-events: none;
+            font-weight: 600;
+            font-size: 1rem;
         }
 
         .input-group input:focus + label,
         .input-group input:not(:placeholder-shown) + label {
-            top: -0.6rem;
-            font-size: 0.8rem;
-            color: #6e8efb;
+            top: -0.8rem;
+            font-size: 0.9rem;
+            color: #667eea;
+            font-weight: 700;
         }
 
-        .login-btn {
+        .submit-btn {
             width: 100%;
-            padding: 1rem;
-            background: linear-gradient(to right, #6e8efb, #a777e3);
+            padding: 1.5rem;
+            background: var(--primary-gradient);
             border: none;
-            border-radius: 8px;
+            border-radius: 15px;
             color: white;
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 1.2rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(110, 142, 251, 0.4);
+            transition: var(--transition);
+            box-shadow: var(--shadow-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .login-btn:hover {
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(110, 142, 251, 0.6);
+            box-shadow: var(--shadow-heavy);
         }
 
         .form-footer {
             text-align: center;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
             color: #666;
+            font-size: 1rem;
         }
 
         .form-footer a {
-            color: #6e8efb;
+            color: #667eea;
             text-decoration: none;
-            transition: all 0.3s;
+            font-weight: 700;
+            transition: var(--transition);
         }
 
         .form-footer a:hover {
+            color: #764ba2;
             text-decoration: underline;
         }
 
-        /* Animations */
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
+        /* Loading Animation */
+        .loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            margin: -12.5px 0 0 -12.5px;
+            border: 3px solid transparent;
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Enhanced Animations */
+        @keyframes fadeInUp {
             to {
-                transform: translateY(0);
                 opacity: 1;
+                transform: translateY(0);
             }
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-20px);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-25px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
         }
 
         .floating {
             animation: float 6s ease-in-out infinite;
         }
 
-        /* Responsive */
+        /* Success Message Styles */
+        .success-message {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--success-gradient);
+            color: white;
+            padding: 1.5rem 2.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-heavy);
+            z-index: 9999;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .success-message.show {
+            transform: translateX(0);
+        }
+
+        .success-message::before {
+            content: '✅';
+            font-size: 1.5rem;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
+            nav {
+                padding: 1rem 2rem;
             }
-            
+
             .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(25px);
+                flex-direction: column;
+                padding: 2rem;
                 gap: 1rem;
+                box-shadow: var(--shadow-light);
             }
-            
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                color: #333;
+                width: 100%;
+                text-align: center;
+                padding: 1.2rem;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(-45deg) translate(-6px, 7px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(45deg) translate(-6px, -7px);
+            }
+
+            .hero {
+                margin-top: 8rem;
+                padding: 0 1rem;
+            }
+
             .cta-buttons {
                 flex-direction: column;
-                gap: 1rem;
+                align-items: center;
             }
+
+            .features {
+                grid-template-columns: 1fr;
+                margin: 6rem 0;
+                gap: 2rem;
+            }
+
+            .feature-card {
+                padding: 2rem;
+            }
+
+            .modal-container {
+                padding: 2.5rem;
+                margin: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                padding: 1rem 2.5rem;
+                font-size: 1rem;
+            }
+
+            .modal-container {
+                padding: 2rem;
+            }
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: var(--accent-gradient);
+            z-index: 9999;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
         }
     </style>
 </head>
 <body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress"></div>
+
     <!-- Particles Background -->
     <div id="particles-js"></div>
 
     <!-- Navigation -->
-    <nav>
-        <a href="#" class="logo animate_animated animate_fadeIn">LibraryPortal</a>
-        <div class="nav-links">
-            <a href="#" class="animate_animated animatefadeIn animate_delay-1s">Home</a>
-            <a href="#" class="animate_animated animatefadeIn animate_delay-1s">Books</a>
-            <a href="about.html" class="animate_animated animatefadeIn animate_delay-1s" button type="submit">About</a>
-            <a href="#" class="animate_animated animatefadeIn animate_delay-1s">Contact</a>
-            <a href="#" id="loginBtn" class="animate_animated animatefadeIn animate_delay-1s">Login</a>
+    <nav id="navbar">
+        <a href="#" class="logo">LibraryPortal</a>
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="#" id="loginBtn">Login</a>
         </div>
     </nav>
 
     <!-- Main Content -->
     <div class="main-container">
         <!-- Hero Section -->
-        <section class="hero animate_animated animatefadeIn animate_delay-2s">
+        <section class="hero" id="home">
             <h1>Discover a World of Knowledge</h1>
-            <p>Access thousands of books, journals, and resources with our digital library platform. Anytime, anywhere.</p>
+            <p>Access thousands of books, journals, and resources with our cutting-edge digital library platform. Learn, explore, and grow - anytime, anywhere.</p>
             <div class="cta-buttons">
-                <a href="#" class="btn btn-primary floating">Explore Collection</a>
-                <a href="#" id="registerBtn" class="btn btn-outline floating">Create Account</a>
+                <a href="#features" class="btn btn-primary floating">
+                    📚 Explore Collection
+                </a>
+                <a href="#" id="registerBtn" class="btn btn-outline floating">
+                    ✨ Create Account
+                </a>
             </div>
         </section>
 
         <!-- Features Section -->
-        <section class="features">
-            <div class="feature-card animate_animated animate_fadeInUp">
+        <section class="features" id="features">
+            <div class="feature-card" data-aos="fade-up">
                 <div class="feature-icon">📚</div>
                 <h3>Extensive Collection</h3>
-                <p>Access over 100,000 books, journals, and research papers from various disciplines.</p>
+                <p>Access over 100,000 carefully curated books, journals, and research papers from various disciplines and leading publishers worldwide.</p>
             </div>
-            <div class="feature-card animate_animated animatefadeInUp animate_delay-1s">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="feature-icon">🔍</div>
-                <h3>Advanced Search</h3>
-                <p>Find exactly what you need with our powerful search and filtering tools.</p>
+                <h3>AI-Powered Search</h3>
+                <p>Find exactly what you need with our intelligent search engine featuring advanced filtering, semantic search, and personalized recommendations.</p>
             </div>
-            <div class="feature-card animate_animated animatefadeInUp animate_delay-2s">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
                 <div class="feature-icon">📱</div>
-                <h3>Mobile Friendly</h3>
-                <p>Access your library on any device, anytime with our responsive platform.</p>
+                <h3>Cross-Platform Access</h3>
+                <p>Seamlessly access your library across all devices with our responsive design, offline reading capabilities, and cloud synchronization.</p>
             </div>
         </section>
     </div>
 
     <!-- Login Modal -->
     <div class="modal" id="loginModal">
-        <div class="login-container">
-            <span class="close-btn" id="closeLogin">&times;</span>
-            <h2>Login to Your Account</h2>
+        <div class="modal-container">
+            <button class="close-btn" id="closeLogin">&times;</button>
+            <h2>Welcome Back</h2>
             <form id="loginForm">
                 <div class="input-group">
-                    <input type="text" id="username" placeholder=" " required>
+                    <input type="text" id="username" placeholder=" " required autocomplete="username">
                     <label for="username">Username or Email</label>
                 </div>
                 <div class="input-group">
-                    <input type="password" id="password" placeholder=" " required>
+                    <input type="password" id="password" placeholder=" " required autocomplete="current-password">
                     <label for="password">Password</label>
                 </div>
-          
-                <a href="index2.html" id="login-btn" button type="submit" class="login-btn">Login</a>
-              
+                <button type="submit" class="submit-btn">Sign In</button>
                 <div class="form-footer">
-                    Don't have an account? <a href="#" id="switchToRegister">Register here</a>
+                    Don't have an account? <a href="#" id="switchToRegister">Create one here</a>
                 </div>
             </form>
         </div>
@@ -442,34 +853,33 @@
 
     <!-- Register Modal -->
     <div class="modal" id="registerModal">
-        <div class="login-container">
-            <span class="close-btn" id="closeRegister">&times;</span>
-            <h2>Create New Account</h2>
+        <div class="modal-container">
+            <button class="close-btn" id="closeRegister">&times;</button>
+            <h2>Join LibraryPortal</h2>
             <form id="registerForm">
                 <div class="input-group">
-                    <input type="text" id="fullname" placeholder=" " required>
+                    <input type="text" id="fullname" placeholder=" " required autocomplete="name">
                     <label for="fullname">Full Name</label>
                 </div>
                 <div class="input-group">
-                    <input type="email" id="email" placeholder=" " required>
+                    <input type="email" id="email" placeholder=" " required autocomplete="email">
                     <label for="email">Email Address</label>
                 </div>
                 <div class="input-group">
-                    <input type="text" id="newUsername" placeholder=" " required>
+                    <input type="text" id="newUsername" placeholder=" " required autocomplete="username">
                     <label for="newUsername">Username</label>
                 </div>
                 <div class="input-group">
-                    <input type="password" id="newPassword" placeholder=" " required>
+                    <input type="password" id="newPassword" placeholder=" " required autocomplete="new-password">
                     <label for="newPassword">Password</label>
                 </div>
                 <div class="input-group">
-                    <input type="password" id="confirmPassword" placeholder=" " required>
+                    <input type="password" id="confirmPassword" placeholder=" " required autocomplete="new-password">
                     <label for="confirmPassword">Confirm Password</label>
                 </div>
-                <a href="index2.html" id="login-btn" target="blank" type="submit" class="login-btn">Register</a>
-                <a href="index2.html" id="login-btn" class="animate_animated animatefadeIn animate_delay-1s"></a>
+                <button type="submit" class="submit-btn">Create Account</button>
                 <div class="form-footer">
-                    Already have an account? <a href="#" id="switchToLogin">Login here</a>
+                    Already have an account? <a href="#" id="switchToLogin">Sign in here</a>
                 </div>
             </form>
         </div>
@@ -477,150 +887,386 @@
 
     <script>
         // Initialize particles.js
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Enhanced particles configuration
             particlesJS("particles-js", {
-                "particles": {
-                    "number": {
-                        "value": 80,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
+                particles: {
+                    number: { value: 120, density: { enable: true, value_area: 800 } },
+                    color: { value: "#ffffff" },
+                    shape: { 
+                        type: "circle",
+                        stroke: { width: 0, color: "#000000" },
+                        polygon: { nb_sides: 5 }
                     },
-                    "color": {
-                        "value": "#ffffff"
+                    opacity: { 
+                        value: 0.6, 
+                        random: true,
+                        anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
                     },
-                    "shape": {
-                        "type": "circle",
-                        "stroke": {
-                            "width": 0,
-                            "color": "#000000"
-                        }
+                    size: { 
+                        value: 3, 
+                        random: true,
+                        anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
                     },
-                    "opacity": {
-                        "value": 0.5,
-                        "random": false
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: "#ffffff",
+                        opacity: 0.4,
+                        width: 1
                     },
-                    "size": {
-                        "value": 3,
-                        "random": true
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 150,
-                        "color": "#ffffff",
-                        "opacity": 0.4,
-                        "width": 1
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 2,
-                        "direction": "none",
-                        "random": false,
-                        "straight": false,
-                        "out_mode": "out",
-                        "bounce": false
+                    move: {
+                        enable: true,
+                        speed: 2,
+                        direction: "none",
+                        random: false,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false,
+                        attract: { enable: false, rotateX: 600, rotateY: 1200 }
                     }
                 },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": {
-                            "enable": true,
-                            "mode": "repulse"
-                        },
-                        "onclick": {
-                            "enable": true,
-                            "mode": "push"
-                        }
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "repulse" },
+                        onclick: { enable: true, mode: "push" },
+                        resize: true
+                    },
+                    modes: {
+                        grab: { distance: 140, line_linked: { opacity: 1 } },
+                        bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+                        repulse: { distance: 200, duration: 0.4 },
+                        push: { particles_nb: 4 },
+                        remove: { particles_nb: 2 }
                     }
+                },
+                retina_detect: true
+            });
+
+            // Get DOM elements
+            const elements = {
+                navbar: document.getElementById('navbar'),
+                menuToggle: document.getElementById('menuToggle'),
+                navLinks: document.getElementById('navLinks'),
+                loginBtn: document.getElementById('loginBtn'),
+                registerBtn: document.getElementById('registerBtn'),
+                loginModal: document.getElementById('loginModal'),
+                registerModal: document.getElementById('registerModal'),
+                closeLogin: document.getElementById('closeLogin'),
+                closeRegister: document.getElementById('closeRegister'),
+                switchToRegister: document.getElementById('switchToRegister'),
+                switchToLogin: document.getElementById('switchToLogin'),
+                loginForm: document.getElementById('loginForm'),
+                registerForm: document.getElementById('registerForm'),
+                scrollProgress: document.querySelector('.scroll-progress')
+            };
+
+            // Mobile menu toggle
+            elements.menuToggle.addEventListener('click', () => {
+                elements.menuToggle.classList.toggle('active');
+                elements.navLinks.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking on links
+            elements.navLinks.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') {
+                    elements.menuToggle.classList.remove('active');
+                    elements.navLinks.classList.remove('active');
+                }
+            });
+
+            // Enhanced scroll effects
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                
+                // Navbar background on scroll
+                if (scrolled > 100) {
+                    elements.navbar.classList.add('scrolled');
+                } else {
+                    elements.navbar.classList.remove('scrolled');
+                }
+
+                // Scroll progress bar
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled_percent = (winScroll / height) * 100;
+                elements.scrollProgress.style.width = scrolled_percent + "%";
+
+                // Parallax effect for hero section
+                const hero = document.querySelector('.hero');
+                if (hero) {
+                    const heroOffset = scrolled * 0.5;
+                    hero.style.transform = `translateY(${heroOffset}px)`;
                 }
             });
 
             // Modal functionality
-            const loginBtn = document.getElementById('loginBtn');
-            const registerBtn = document.getElementById('registerBtn');
-            const loginModal = document.getElementById('loginModal');
-            const registerModal = document.getElementById('registerModal');
-            const closeLogin = document.getElementById('closeLogin');
-            const closeRegister = document.getElementById('closeRegister');
-            const switchToRegister = document.getElementById('switchToRegister');
-            const switchToLogin = document.getElementById('switchToLogin');
-
-            // Show login modal
-            loginBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                loginModal.classList.add('active');
-            });
-
-            // Show register modal
-            registerBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                registerModal.classList.add('active');
-            });
-
-            // Close modals
-            closeLogin.addEventListener('click', function() {
-                loginModal.classList.remove('active');
-            });
-
-            closeRegister.addEventListener('click', function() {
-                registerModal.classList.remove('active');
-            });
-
-            // Switch between login and register
-            switchToRegister.addEventListener('click', function(e) {
-                e.preventDefault();
-                loginModal.classList.remove('active');
-                registerModal.classList.add('active');
-            });
-
-            switchToLogin.addEventListener('click', function(e) {
-                e.preventDefault();
-                registerModal.classList.remove('active');
-                loginModal.classList.add('active');
-            });
-
-            // Close when clicking outside
-            window.addEventListener('click', function(e) {
-                if (e.target === loginModal) {
-                    loginModal.classList.remove('active');
-                }
-                if (e.target === registerModal) {
-                    registerModal.classList.remove('active');
-                }
-            });
-
-            // Form submissions
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Login functionality would be implemented here');
-                loginModal.classList.remove('active');
-            });
-
-            document.getElementById('registerForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Registration functionality would be implemented here');
-                registerModal.classList.remove('active');
-            });
-
-            // Animate elements when they come into view
-            const animateOnScroll = function() {
-                const featureCards = document.querySelectorAll('.feature-card');
-                
-                featureCards.forEach(card => {
-                    const cardPosition = card.getBoundingClientRect().top;
-                    const screenPosition = window.innerHeight / 1.3;
-                    
-                    if (cardPosition < screenPosition) {
-                        card.classList.add('animate_animated', 'animate_fadeInUp');
-                    }
-                });
+            const showModal = (modal) => {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
             };
 
-            window.addEventListener('scroll', animateOnScroll);
-            // Initial check in case elements are already in view
-            animateOnScroll();
+            const hideModal = (modal) => {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            elements.loginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showModal(elements.loginModal);
+            });
+
+            elements.registerBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showModal(elements.registerModal);
+            });
+
+            elements.closeLogin.addEventListener('click', () => {
+                hideModal(elements.loginModal);
+            });
+
+            elements.closeRegister.addEventListener('click', () => {
+                hideModal(elements.registerModal);
+            });
+
+            elements.switchToRegister.addEventListener('click', (e) => {
+                e.preventDefault();
+                hideModal(elements.loginModal);
+                showModal(elements.registerModal);
+            });
+
+            elements.switchToLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                hideModal(elements.registerModal);
+                showModal(elements.loginModal);
+            });
+
+            // Close modals when clicking outside
+            [elements.loginModal, elements.registerModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        hideModal(modal);
+                    }
+                });
+            });
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    hideModal(elements.loginModal);
+                    hideModal(elements.registerModal);
+                }
+            });
+
+            // Form validation and submission
+            const validateForm = (form) => {
+                const inputs = form.querySelectorAll('input[required]');
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        input.style.borderColor = '#e74c3c';
+                        input.style.animation = 'shake 0.5s ease-in-out';
+                        isValid = false;
+                    } else {
+                        input.style.borderColor = '#e1e5e9';
+                        input.style.animation = '';
+                    }
+                });
+
+                // Password confirmation check for register form
+                if (form.id === 'registerForm') {
+                    const password = form.querySelector('#newPassword').value;
+                    const confirmPassword = form.querySelector('#confirmPassword').value;
+                    
+                    if (password !== confirmPassword) {
+                        form.querySelector('#confirmPassword').style.borderColor = '#e74c3c';
+                        showNotification('Passwords do not match!', 'error');
+                        isValid = false;
+                    }
+                }
+
+                return isValid;
+            };
+
+            // Handle form submission with redirect to main page
+            const handleSubmit = async (form, action) => {
+                if (!validateForm(form)) return;
+
+                const submitBtn = form.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                
+                submitBtn.classList.add('loading');
+                submitBtn.textContent = 'Processing...';
+                submitBtn.disabled = true;
+
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                submitBtn.classList.remove('loading');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+
+                // Success feedback
+                const modal = form.closest('.modal');
+                hideModal(modal);
+                
+                // Show success message and redirect to main page
+                showSuccessMessage(`${action} successful! Redirecting to main page...`);
+                
+                // Reset form
+                form.reset();
+                
+                // Redirect to your main page file (with space in name)
+                setTimeout(() => {
+                    window.location.href = 'main page.html'; // Your exact filename
+                }, 2000);
+            };
+
+            const showSuccessMessage = (message) => {
+                const notification = document.createElement('div');
+                notification.className = 'success-message';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                // Show notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+                
+                // Remove after 4 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 400);
+                }, 4000);
+            };
+
+            const showNotification = (message, type = 'info') => {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 30px;
+                    right: 30px;
+                    background: ${type === 'error' ? 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)' : 'var(--accent-gradient)'};
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: 12px;
+                    box-shadow: var(--shadow-heavy);
+                    z-index: 9999;
+                    transform: translateX(400px);
+                    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                    font-weight: 600;
+                    font-size: 1rem;
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+                
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(400px)';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 400);
+                }, 3000);
+            };
+
+            // Form submission event listeners
+            elements.loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleSubmit(elements.loginForm, 'Login');
+            });
+
+            elements.registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleSubmit(elements.registerForm, 'Registration');
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#' && href.length > 1) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Enhanced intersection observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        entry.target.classList.add('animate__fadeInUp');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe feature cards
+            document.querySelectorAll('.feature-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                card.style.transition = `all 0.8s ease ${index * 0.2}s`;
+                observer.observe(card);
+            });
+
+            // Enhanced input focus effects
+            document.querySelectorAll('.input-group input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                    this.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+
+                // Real-time validation
+                input.addEventListener('input', function() {
+                    if (this.value.trim()) {
+                        this.style.borderColor = '#28a745';
+                    } else {
+                        this.style.borderColor = '#e1e5e9';
+                    }
+                });
+            });
+
+            // Add loading states to buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!this.classList.contains('loading')) {
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 150);
+                    }
+                });
+            });
+
+            console.log('🚀 LibraryPortal connected to main page successfully!');
         });
     </script>
 </body>
